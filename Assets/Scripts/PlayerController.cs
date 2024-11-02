@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
  // Rigidbody of the player.
  private Rigidbody rb; 
+ private int score ;
+ public TextMeshProUGUI scoreText;
+ public GameObject winTextObject;
 
  // Movement along X and Y axes.
  private float movementX;
@@ -21,6 +25,9 @@ public class PlayerController : MonoBehaviour
     {
  // Get and store the Rigidbody component attached to the player.
         rb = GetComponent<Rigidbody>();
+        score = 0;
+        SetScoreText();
+        winTextObject.SetActive(false);
     }
  
  // This function is called when a move input is detected.
@@ -34,6 +41,15 @@ public class PlayerController : MonoBehaviour
         movementY = movementVector.y; 
     }
 
+ void SetScoreText()
+ {
+     scoreText.text = "Score: " + score.ToString();
+       if(score >= 14)
+       {
+          winTextObject.SetActive(true);
+       }
+ }
+
  // FixedUpdate is called once per fixed frame-rate frame.
  private void FixedUpdate() 
     {
@@ -43,5 +59,16 @@ public class PlayerController : MonoBehaviour
  // Apply force to the Rigidbody to move the player.
         rb.AddForce(movement * speed); 
     }
+
+private void OnTriggerEnter(Collider other)
+{
+     if(other.gameObject.CompareTag("Cube"))
+     {
+         other.gameObject.SetActive(false);
+         score += 1;
+         SetScoreText();
+     }
 }
+}
+
  
